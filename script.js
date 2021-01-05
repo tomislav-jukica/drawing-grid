@@ -3,6 +3,7 @@ const slider = $("input#slider");
 const color = $("input#color");
 let output = $("#vrijednostSlidera")[0];
 output.innerHTML = slider[0].value;
+let bojaIE = "#ffffff";
 
 slider.change(function() { //na micanje slidera 
   output.innerHTML = this.value;
@@ -54,19 +55,28 @@ function prazni() {
 
 
 function changeColor(elem) {
-    let elemBackground = getStyle(elem, 'backgroundColor');
-
-    if(elemBackground !== "rgb(255, 255, 255)" && elemBackground !== "#ffffff" ){
-        elem.style.backgroundColor = "#ffffff";
-    } else {
-        if(color[0].value !== "#ffffff") {
-            let boja = color[0].value;    
-            elem.style.backgroundColor = boja;
+    if(isIE11 = !!window.MSInputMethodContext && !!document.documentMode) { //IE11
+        if(bojaIE !== "#ffffff") {   
+            elem.style.backgroundColor = bojaIE;
         } else {
             let boja = getRandomColor();   
             elem.style.backgroundColor = boja;
         } 
-    }       
+    } else {
+        let elemBackground = getStyle(elem, 'backgroundColor');
+        if(elemBackground !== "rgb(255, 255, 255)" && elemBackground !== "#ffffff" ){
+            elem.style.backgroundColor = "#ffffff";
+        } else {
+            if(color[0].value !== "#ffffff") {
+                let boja = color[0].value;    
+                elem.style.backgroundColor = boja;
+            } else {
+                let boja = getRandomColor();   
+                elem.style.backgroundColor = boja;
+            } 
+        } 
+    }
+          
 }
 
 function getRandomColor() {
@@ -87,3 +97,23 @@ function getRandomColor() {
   }
 
 
+  $(".ie-color").on("change", function() {
+      let red = Number($("#red")[0].value).toString(16);
+      let green = Number($("#green")[0].value).toString(16)
+      let blue = Number($("#blue")[0].value).toString(16)
+      if(red.length < 2) {
+        red = "0" + red;
+      }
+      if(green.length < 2) {
+        green = "0" + green;
+      }
+      if(blue.length < 2) {
+        blue = "0" + blue;
+      }
+      bojaIE = "#"+red+green+blue;
+
+      let box = $(".trenutnaBoja");
+      box.css("background-color", bojaIE);
+
+
+  })
